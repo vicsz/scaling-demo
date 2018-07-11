@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Cache-Control" content="no-store" />
+
+    <title>PCF Memory Scaling Demo</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+</head>
+
+<body>
+
+<div class="container" style="padding: 16px 16px;">
+
+    <table id="appTable" class="table table-striped table-responsive-md btn-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Since</th>
+                <th>Memory Usage</th>
+                <th>Control</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <th scope="row">1</th>
+                <td class="bootTime"></td>
+                <td class="memoryUsage"></td>
+                <td>
+                    <button type="button" class="btn btn-primary btn-rounded btn-sm my-0" onclick="fillMemory(0)">Fill</button>
+                    <button type="button" class="btn btn-primary btn-rounded btn-sm my-0" onclick="refresh(0)">Refresh</button>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">2</th>
+                <td class="bootTime"></td>
+                <td class="memoryUsage"></td>
+                <td>
+                    <button type="button" class="btn btn-primary btn-rounded btn-sm my-0" onclick="fillMemory(1)">Fill</button>
+                    <button type="button" class="btn btn-primary btn-rounded btn-sm my-0" onclick="refresh(1)">Refresh</button>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">3</th>
+                <td class="bootTime"></td>
+                <td class="memoryUsage"></td>
+                <td>
+                    <button type="button" class="btn btn-primary btn-rounded btn-sm my-0" onclick="fillMemory(2)">Fill</button>
+                    <button type="button" class="btn btn-primary btn-rounded btn-sm my-0" onclick="refresh(2)">Refresh</button>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">4</th>
+                <td class="bootTime"></td>
+                <td class="memoryUsage"></td>
+                <td>
+                    <button type="button" class="btn btn-primary btn-rounded btn-sm my-0" onclick="fillMemory(3)">Fill</button>
+                    <button type="button" class="btn btn-primary btn-rounded btn-sm my-0" onclick="refresh(3)">Refresh</button>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">5</th>
+                <td class="bootTime"></td>
+                <td class="memoryUsage"></td>
+                <td>
+                    <button type="button" class="btn btn-primary btn-rounded btn-sm my-0" onclick="fillMemory(4)">Fill</button>
+                    <button type="button" class="btn btn-primary btn-rounded btn-sm my-0" onclick="refresh(4)">Refresh</button>
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
+
+</div>
+
+<script>
+
+    var applicationId;
+
+    $.ajax({ url: "https://scaling-demo.cfapps.io/api/info"}).then(function(data){
+        applicationId=data.applicationId;
+    });
+
+    function fillMemory(rowNumber){
+
+        console.log("Application id " + applicationId);
+
+        $.ajax({
+            url: "https://scaling-demo.cfapps.io/api/fill-memory",
+            headers: {'X-CF-APP-INSTANCE': applicationId + ':' + rowNumber}
+        });
+    }
+
+    function refresh(rowNumber) {
+        $.ajax({
+            url: "https://scaling-demo.cfapps.io/api/info",
+            headers: {'X-CF-APP-INSTANCE': applicationId + ':' + rowNumber}
+        }).then(function(data) {
+            $('#appTable .bootTime').eq(rowNumber).html(data.bootTime);
+            $('#appTable .memoryUsage').eq(rowNumber).html(data.memoryUsage);
+        });
+    }
+
+</script>
+
+
+</body>
+
+</html>

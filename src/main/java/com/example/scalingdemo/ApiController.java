@@ -37,13 +37,12 @@ public class ApiController {
             memoryList.add(new byte[megaByteSize]);
         }
 
-
     }
 
     @RequestMapping("free-memory")
     public synchronized void freeMemory(){
 
-        memoryList = new LinkedList();
+        memoryList = new LinkedList<>();
     }
 
     @RequestMapping("info")
@@ -57,9 +56,10 @@ public class ApiController {
 
         map.put("bootTime", new SimpleDateFormat("hh:mm:ss a").format(bootTime));
         map.put("applicationId", applicationId);
-        map.put("allocatedMemory", allocatedMemory / (1024*1024) + " MB");
-        map.put("maxMemory", maxMemory / (1024*1024) + " MB");
+        map.put("allocatedJvmMemory", allocatedMemory / (1024*1024) + " MB");
+        map.put("maxJvmMemory", maxMemory / (1024*1024) + " MB");
         map.put("memoryUsage", memoryUsage + " %");
+        map.put("maxContainerMemory", System.getenv("MEMORY_LIMIT"));
 
         return map;
     }

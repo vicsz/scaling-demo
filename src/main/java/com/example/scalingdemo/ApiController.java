@@ -17,14 +17,33 @@ public class ApiController {
 
     private Date bootTime = new Date();
 
-    private List memoryList = new LinkedList();
+    private List<byte[]> memoryList = new LinkedList();
 
 
     @RequestMapping("fill-memory")
-    public void fillMemory(){
+    public synchronized void fillMemory(){
 
-        memoryList.add(new byte[1024*1024*100]);
+        int fillPercentage = 90;
+        int megaByteSize = 1024*1024;
 
+        long allocatedMemory = (Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory());
+        long maxMemory = Runtime.getRuntime().maxMemory();
+
+        long fillAmount = (maxMemory*fillPercentage/100)-allocatedMemory;
+
+        System.out.println("Allocating additional memory by " + fillAmount);
+
+        for (int i = 0; i < fillAmount/megaByteSize; i++) {
+            memoryList.add(new byte[megaByteSize]);
+        }
+
+
+    }
+
+    @RequestMapping("free-memory")
+    public synchronized void freeMemory(){
+
+        memoryList = new LinkedList();
     }
 
     @RequestMapping("info")

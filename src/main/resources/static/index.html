@@ -26,51 +26,6 @@
         </thead>
 
         <tbody>
-            <tr>
-                <th scope="row">1</th>
-                <td class="bootTime"></td>
-                <td class="memoryUsage"></td>
-                <td>
-                    <button type="button" class="btn btn-primary btn-rounded btn-sm my-0" onclick="fillMemory(0)">Fill</button>
-                    <button type="button" class="btn btn-primary btn-rounded btn-sm my-0" onclick="refresh(0)">Refresh</button>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row">2</th>
-                <td class="bootTime"></td>
-                <td class="memoryUsage"></td>
-                <td>
-                    <button type="button" class="btn btn-primary btn-rounded btn-sm my-0" onclick="fillMemory(1)">Fill</button>
-                    <button type="button" class="btn btn-primary btn-rounded btn-sm my-0" onclick="refresh(1)">Refresh</button>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row">3</th>
-                <td class="bootTime"></td>
-                <td class="memoryUsage"></td>
-                <td>
-                    <button type="button" class="btn btn-primary btn-rounded btn-sm my-0" onclick="fillMemory(2)">Fill</button>
-                    <button type="button" class="btn btn-primary btn-rounded btn-sm my-0" onclick="refresh(2)">Refresh</button>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row">4</th>
-                <td class="bootTime"></td>
-                <td class="memoryUsage"></td>
-                <td>
-                    <button type="button" class="btn btn-primary btn-rounded btn-sm my-0" onclick="fillMemory(3)">Fill</button>
-                    <button type="button" class="btn btn-primary btn-rounded btn-sm my-0" onclick="refresh(3)">Refresh</button>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row">5</th>
-                <td class="bootTime"></td>
-                <td class="memoryUsage"></td>
-                <td>
-                    <button type="button" class="btn btn-primary btn-rounded btn-sm my-0" onclick="fillMemory(4)">Fill</button>
-                    <button type="button" class="btn btn-primary btn-rounded btn-sm my-0" onclick="refresh(4)">Refresh</button>
-                </td>
-            </tr>
 
         </tbody>
     </table>
@@ -83,27 +38,50 @@
 
     $.ajax({ url: "https://scaling-demo.cfapps.io/api/info"}).then(function(data){
         applicationId=data.applicationId;
+        refresh();
     });
 
     function fillMemory(rowNumber){
-
-        console.log("Application id " + applicationId);
-
         $.ajax({
             url: "https://scaling-demo.cfapps.io/api/fill-memory",
             headers: {'X-CF-APP-INSTANCE': applicationId + ':' + rowNumber}
-        });
+        }).done(refresh());
     }
 
-    function refresh(rowNumber) {
+    function refresh(rowNumber=0) {
+
+        console.log("Calling refresh");
         $.ajax({
             url: "https://scaling-demo.cfapps.io/api/info",
             headers: {'X-CF-APP-INSTANCE': applicationId + ':' + rowNumber}
-        }).then(function(data) {
+        }).done(function(data) {
+
+            var rowCount = $('#appTable tbody tr').length;
+
+            if(rowNumber >= rowCount){
+                 var rowHtml = `
+                        <tr>
+                            <th scope="row">${rowNumber+1}</th>
+                            <td class="bootTime"></td>
+                            <td class="memoryUsage"></td>
+                            <td>
+                                <button type="button" class="btn btn-primary btn-rounded btn-sm my-0" onclick="fillMemory(${rowNumber})">Fill Memory</button>
+                            </td>
+                        </tr>`;
+
+                $('#appTable > tbody:last-child').append(rowHtml);
+            }
+
             $('#appTable .bootTime').eq(rowNumber).html(data.bootTime);
             $('#appTable .memoryUsage').eq(rowNumber).html(data.memoryUsage);
+
+            refresh(rowNumber+1);
+        }).fail(function(){
+            $("#appTable tr:gt("+rowNumber+")").remove();
         });
     }
+
+    setInterval(function(){console.log("Refreshing"); refresh();}, 3000);
 
 </script>
 

@@ -8,4 +8,4 @@ Bind a AutoScaling Service to your Application, and configure it for Container M
 
 > Note - additional instances are scaled up when the average container memory amount exceeds the High Memory amount set in settings.  Not that this is total container memory and not allocated JVM memory.
 
-<img src="img/=.png" width="750">
+<img src="img/scaling.png" width="750">

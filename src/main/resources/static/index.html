@@ -42,16 +42,9 @@
         refresh();
     });
 
-    function fillMemory(rowNumber){
+    function callApi(apiCommand, rowNumber){
         $.ajax({
-            url: "api/fill-memory",
-            headers: {'X-CF-APP-INSTANCE': applicationId + ':' + rowNumber}
-        }).done(refresh());
-    }
-
-     function freeMemory(rowNumber){
-        $.ajax({
-            url: "api/free-memory",
+            url: "api/"+apiCommand,
             headers: {'X-CF-APP-INSTANCE': applicationId + ':' + rowNumber}
         }).done(refresh());
     }
@@ -74,8 +67,10 @@
                             <td class="memoryUsage"></td>
                             <td class="cpuUsage"></td>
                             <td>
-                                <button type="button" class="btn btn-primary btn-rounded btn-sm my-0" onclick="freeMemory(${rowNumber})">Free Memory</button>
-                                <button type="button" class="btn btn-primary btn-rounded btn-sm my-0" onclick="fillMemory(${rowNumber})">Fill Memory</button>
+                                <button type="button" class="btn btn-primary btn-rounded btn-sm my-0" onclick="callApi('free-memory',${rowNumber})">Free Memory</button>
+                                <button type="button" class="btn btn-primary btn-rounded btn-sm my-0" onclick="callApi('fill-memory',${rowNumber})">Fill Memory</button>
+                                <button type="button" class="btn btn-primary btn-rounded btn-sm my-0" onclick="callApi('free-cpu',${rowNumber})">Free CPU</button>
+                                <button type="button" class="btn btn-primary btn-rounded btn-sm my-0" onclick="callApi('fill-cpu',${rowNumber})">Fill CPU</button>
                             </td>
                         </tr>`;
 

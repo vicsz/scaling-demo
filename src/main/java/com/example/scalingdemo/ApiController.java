@@ -20,6 +20,7 @@ public class ApiController {
 
     private List<byte[]> memoryList;
 
+    private List<Thread> threadList = new ArrayList<>();
 
     @RequestMapping("fill-memory")
     public synchronized void fillMemory(){
@@ -33,13 +34,11 @@ public class ApiController {
         long maxMemory = Runtime.getRuntime().maxMemory();
 
         long fillAmount = (maxMemory*fillPercentage/100)-allocatedMemory;
-
         System.out.println("Allocating additional memory by " + fillAmount);
 
         for (int i = 0; i < fillAmount/megaByteSize; i++) {
             memoryList.add(new byte[megaByteSize]);
         }
-
     }
 
     @RequestMapping("free-memory")
@@ -47,6 +46,61 @@ public class ApiController {
 
         memoryList = new LinkedList<>();
     }
+
+
+    @RequestMapping("fill-cpu")
+    public synchronized void fillCpu(){
+
+        freeCpu();
+
+        threadList = new ArrayList<>();
+
+        for (int i = 0; i < Runtime.getRuntime().availableProcessors(); i++) {
+            Thread thread = new Thread(this::getLargestPrime);
+            thread.start();
+            threadList.add(thread);
+        }
+    }
+
+    @RequestMapping("free-cpu")
+    public synchronized void freeCpu(){
+
+        for (Thread thread : threadList)
+        {
+            System.out.println("Stopping Threads");
+            thread.interrupt();
+        }
+
+    }
+
+
+    //checks whether an int is prime or not.
+    private int getLargestPrime() {
+
+        int largestPrime = 1;
+
+        for(int i=3;i<Integer.MAX_VALUE;i++){
+            if(isPrime(i))
+                largestPrime=i;
+
+            if(Thread.interrupted())
+                break;
+        }
+
+        System.out.println("Largest Prime returned : " + largestPrime);
+
+        return largestPrime;
+    }
+
+    private boolean isPrime(int n) {
+        for(int i=2;i<n;i++) {
+            if(n%i==0)
+                return false;
+        }
+        return true;
+    }
+
+
 
     @RequestMapping("info")
     public Map<String, String> memoryInfo(){

@@ -30,4 +30,5 @@ Note -- you may need to run *cf push* with **--random-route** if the route alrea
 
 3. JVM Garbage Collection (and freeing of RAM) isn't instant (can take a few seconds)
 
+4. CPU Usage indication in the GUI is laggy , and not always accurate (using *OperatingSystemMXBean* )
 

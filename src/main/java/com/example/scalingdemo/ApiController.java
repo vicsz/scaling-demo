@@ -12,7 +12,7 @@ import java.util.*;
 public class ApiController {
 
 
-    @Value("${vcap.application.application_id:local_guid}")
+    @Value("${vcap.application.application_id:#{null}}")
     private String applicationId;
 
     private Date bootTime = new Date();
@@ -31,6 +31,7 @@ public class ApiController {
 
         long fillAmount = (maxMemory*fillPercentage/100)-allocatedMemory;
 
+        System.out.println("AMemory : " + allocatedMemory + " / " + maxMemory);
         System.out.println("Allocating additional memory by " + fillAmount);
 
         for (int i = 0; i < fillAmount/megaByteSize; i++) {
@@ -58,7 +59,7 @@ public class ApiController {
         map.put("applicationId", applicationId);
         map.put("allocatedJvmMemory", allocatedMemory / (1024*1024) + " MB");
         map.put("maxJvmMemory", maxMemory / (1024*1024) + " MB");
-        map.put("memoryUsage", memoryUsage + " %");
+        map.put("memoryUsage", memoryUsage + "%");
         map.put("maxContainerMemory", System.getenv("MEMORY_LIMIT"));
 
         return map;

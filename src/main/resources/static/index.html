@@ -20,7 +20,7 @@
             <tr>
                 <th>#</th>
                 <th>Since</th>
-                <th>Memory Usage</th>
+                <th>JVM Memory Usage</th>
                 <th>Control</th>
             </tr>
         </thead>
@@ -81,9 +81,12 @@
             }
 
             $('#appTable .bootTime').eq(rowNumber).html(data.bootTime);
-            $('#appTable .memoryUsage').eq(rowNumber).html(data.memoryUsage);
+            $('#appTable .memoryUsage').eq(rowNumber).html('<b>' + data.memoryUsage + '</b>  (' + data.allocatedJvmMemory + '/' + data.maxJvmMemory + ')');
 
-            refresh(rowNumber+1);
+            if(data.applicationId){ //Skip loading more then one row locally (non-PCF)
+                refresh(rowNumber+1);
+            }
+
         }).fail(function(){
             $("#appTable tr:gt("+rowNumber+")").remove();
         });

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.lang.management.ManagementFactory;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -17,11 +18,13 @@ public class ApiController {
 
     private Date bootTime = new Date();
 
-    private List<byte[]> memoryList = new LinkedList();
+    private List<byte[]> memoryList;
 
 
     @RequestMapping("fill-memory")
     public synchronized void fillMemory(){
+
+        memoryList = new LinkedList<>();
 
         int fillPercentage = 90;
         int megaByteSize = 1024*1024;
@@ -53,6 +56,8 @@ public class ApiController {
         long allocatedMemory = (Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory());
         long maxMemory = Runtime.getRuntime().maxMemory();
 
+        ManagementFactory.getOperatingSystemMXBean().getSystemLoadAverage();
+
         double memoryUsage = Math.round((double)allocatedMemory/maxMemory*10000)/100;
 
         map.put("bootTime", new SimpleDateFormat("hh:mm:ss a").format(bootTime));
@@ -61,6 +66,7 @@ public class ApiController {
         map.put("maxJvmMemory", maxMemory / (1024*1024) + " MB");
         map.put("memoryUsage", memoryUsage + "%");
         map.put("maxContainerMemory", System.getenv("MEMORY_LIMIT"));
+        map.put("cpuUsage", Math.round(ManagementFactory.getOperatingSystemMXBean().getSystemLoadAverage()) + "%");
 
         return map;
     }

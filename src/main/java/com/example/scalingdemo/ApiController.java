@@ -34,7 +34,6 @@ public class ApiController {
 
         long fillAmount = (maxMemory*fillPercentage/100)-allocatedMemory;
 
-        System.out.println("AMemory : " + allocatedMemory + " / " + maxMemory);
         System.out.println("Allocating additional memory by " + fillAmount);
 
         for (int i = 0; i < fillAmount/megaByteSize; i++) {
@@ -55,8 +54,6 @@ public class ApiController {
 
         long allocatedMemory = (Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory());
         long maxMemory = Runtime.getRuntime().maxMemory();
-
-        ManagementFactory.getOperatingSystemMXBean().getSystemLoadAverage();
 
         double memoryUsage = Math.round((double)allocatedMemory/maxMemory*10000)/100;
 

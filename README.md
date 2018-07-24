@@ -11,8 +11,10 @@ gradle build
 ```
 
 ```sh
-cf push scaling-demo -p build/libs/scaling-demo-0.0.1-SNAPSHOT.jar
+cf push
 ```
+
+Note -- you may need to run *cf push* with **--random-route** if the route already exists
 
 2. Bind a AutoScaling Service to your Application, and configure it for Container Memory Scaling.
 
@@ -22,11 +24,11 @@ cf push scaling-demo -p build/libs/scaling-demo-0.0.1-SNAPSHOT.jar
 
 3. Increase JVM Memory (by clicking on Fill buttons) , until total container memory hits threshold.
 
-<img src="img/gui.png" width="400">
+<img src="img/gui.png" width="750">
 
 ## Notes
 
-1. Usage of X-CF-APP-INSTANCE header to route to specific containers instead of standard round robyn.
+1. Usage of X-CF-APP-INSTANCE header to route to specific containers instead of standard round-robin.
 
 2. **api/info** endpoint for getting application information.
 

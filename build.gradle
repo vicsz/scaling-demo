@@ -29,3 +29,5 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-web')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
+
+bootJar.archiveName = "scaling-demo.jar"

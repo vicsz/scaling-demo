@@ -1,0 +1,3 @@
+applications:
+- name: scaling-demo
+  path: build/libs/scaling-demo.jar
